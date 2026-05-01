@@ -1,5 +1,5 @@
 ## About Us
-Team Name: BBY-XX OR DTC-XX
+Team Name: DTC-05
 Team Members:
 - Armin H. (Set E)
 - Fara Halterman (Set 2F)
