@@ -3,7 +3,7 @@
   "description": "none",
   "main": "Server/server.js",
   "scripts": {
-"dev": "concurrently \"vite\" \"nodemon src/server/server.js\"",
+    "dev": "concurrently \"vite\" \"nodemon client/src/server/server.js\"",
     "build": "vite build"
   },
   "devDependencies": {
@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "bcryptjs": "^3.0.3",
     "bootstrap": "^5.3.8",
     "express": "^5.2.1",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "sequelize": "^6.37.8"
   }
 }
