@@ -16,12 +16,7 @@ if (!process.env.DATABASE_URL) {
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   // This parameter is what was generated to fix Dialect needing to be explicitly supplied
   dialect: "postgres",
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false, // Set to true in production with proper certificates
-    },
-  },
+
 });
 
 
@@ -41,14 +36,14 @@ app.get("/", (req, res) => {
   // res.redirect("/home");
 });
 
-// sequelize
+sequelize
 
-//   .authenticate()
+  .authenticate()
 
-//   .then(() => {
-//     console.log("Connection has been established successfully.");
-//   })
+  .then(() => {
+    console.log("Connection has been established successfully.");
+  })
 
-//   .catch((err) => {
-//     console.error("Unable to connect to the database:", err);
-//   });
+  .catch((err) => {
+    console.error("Unable to connect to the database:", err);
+  });
