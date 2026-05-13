@@ -11,9 +11,9 @@ connectedCallback() {
         <footer>
             <div>
 
-                <a href="index.html">
+                <a href="home.html">
                     <div>
-                        <h1>1</h1>
+                        <h1>Home/Map</h1>
                     </div>
                 </a>
 
