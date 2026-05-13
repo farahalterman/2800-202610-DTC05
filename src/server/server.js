@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require("express");
 const Sequelize = require("sequelize");
+const app = express();
 
 
 /**
@@ -19,21 +20,73 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 });
 
+const User = sequelize.define(
+  "user",
+  {
+    // attributes
+    firstName: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    lastName: {
+      type: Sequelize.STRING,
+      // allowNull defaults to true
+    },
+  },
+  {
+    // options
+  },
+);
 
-const app = express();
+
+// Note: Instead of calling sync() for every model, you can call sequelize.sync() which will automatically sync all models.
+// Note: using `force: true` will drop the table if it already exists
+// User.sync({ force: true }).then(() => {
+//   // Now the `users` table in the database corresponds to the model definition
+//   return User.create({
+//     firstName: 'John',
+//     lastName: 'Hancock'
+//   });
+// });
+
+// // Find all users
+// User.findAll().then(users => {
+//   console.log("All users:", JSON.stringify(users, null, 4));
+// });
+
+// Create a new user
+// User.create({ firstName: "Jane", lastName: "Doe" }).then(jane => {
+//   console.log("Jane's auto-generated ID:", jane.id);
+// });
+
+// // Delete everyone named "Jane"
+// User.destroy({
+//   where: {
+  //     firstName: "Jane"
+//   }
+// }).then(() => {
+//   console.log("Done");
+// });
+
+// // Change everyone without a last name to "Doe"
+// User.update({ lastName: "Doe" }, {
+//   where: {
+//     lastName: null
+//   }
+// }).then(() => {
+//   console.log("Done");
+// });
 
 app.use(express.static("public"));
-
 const PORT = 3000;
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
-  // res.redirect("/home");
+  // res.json({ message: "Hello World" });
+  res.redirect("/login.html");
 });
 
 sequelize
@@ -47,3 +100,33 @@ sequelize
   .catch((err) => {
     console.error("Unable to connect to the database:", err);
   });
+
+User.sync({force: true});
+
+app.post("/user", async (req, res) => {
+  try {
+    const newUser = new User(req.body);
+
+    await newUser.save();
+
+    res.json({ user: newUser }); // Returns the new user that is created in the database
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.get("/user/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const user = await User.findAll({
+      where: {
+        id: userId,
+      },
+    });
+
+    res.json({ user });
+  } catch (error) {
+    console.error(error);
+  }
+});
