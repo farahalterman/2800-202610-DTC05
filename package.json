@@ -3,7 +3,7 @@
   "description": "none",
   "main": "Server/server.js",
   "scripts": {
-"dev": "concurrently \"vite\" \"nodemon src/server/server.js\"",
+"dev": "concurrently \"vite\" \"nodemon server/server.js\"",
     "build": "vite build"
   },
   "devDependencies": {
