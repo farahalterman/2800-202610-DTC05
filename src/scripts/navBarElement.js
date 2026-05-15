@@ -9,23 +9,23 @@ connectedCallback() {
 
         this.innerHTML = `
         <footer>
-            <div>
+            <div class="container" id="navbar">
 
-                <a href="home.html">
+                <a href="home.html" class="navItem">
                     <div>
-                        <h1>Home/Map</h1>
+                        <h1>HOME</h1>
                     </div>
                 </a>
 
-                <a href="index.html">
+                <a href="index.html" class="navItem">
                     <div>
-                        <h1>2</h1>
+                        <h1>FAVORITES</h1>
                     </div>
                 </a>
 
-                <a href="index.html">
+                <a href="index.html" class="navItem">
                     <div>
-                        <h1>3</h1>
+                        <h1>ACCOUNT</h1>
                     </div>
                 </a>
 

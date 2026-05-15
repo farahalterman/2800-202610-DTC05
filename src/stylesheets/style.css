@@ -1,19 +1,19 @@
-#navBar {
-    padding: 15%;
-    border-radius: 20%;
-}
-
-#navButton {
-    padding: 30%;
-    background-color: gray;
-}
-
-#infoBox {
+#navbar {
+	display: inline-flex;
+    flex-direction: row;
+	justify-content: space-around;
+	align-items: flex-end;
     border-color: black;
-    flex-direction: column;
     border-style: solid;
     border-width: 1px;
     border-radius: 5px;
-    display: inline-block;
-    padding: 2%;
+    width: 30%;
+}
+
+.navItem {
+    /* margin-left: 5%;
+    margin-right: 5%; */
+    color: black;
+    text-decoration: none;
+    
 }
