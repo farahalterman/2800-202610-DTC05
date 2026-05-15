@@ -29,9 +29,7 @@ CREATE TABLE Location (
     location_id SERIAL PRIMARY KEY,
     location_name VARCHAR(255) NOT NULL,
     coordinates POINT NOT NULL, -- point is an x,y coordinate
-    overall_rating_avg DECIMAL(3,2) GENERATED ALWAYS AS (
-        (SELECT AVG(overall_rating) FROM Review WHERE Review.location_id = Location.location_id)
-    ) STORED,
+    overall_rating_avg DECIMAL(3,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -83,3 +81,36 @@ CREATE TRIGGER update_location_updated_at BEFORE UPDATE ON Location
 
 CREATE TRIGGER update_review_updated_at BEFORE UPDATE ON Review
     FOR EACH ROW EXECUTE FUNCTION update_time();
+
+
+/*
+ * Create a function and triggers to update overall_rating_avg of a location
+ * claude.ai
+ *
+ * @author Sonnet 4.5
+*/
+-- Create function to update location's overall_rating_avg
+CREATE OR REPLACE FUNCTION update_location_rating_avg()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE Location
+    SET overall_rating_avg = (
+        SELECT COALESCE(AVG(overall_rating), 0)
+        FROM Review
+        WHERE location_id = COALESCE(NEW.location_id, OLD.location_id)
+    )
+    WHERE location_id = COALESCE(NEW.location_id, OLD.location_id);
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Create triggers to automatically update location rating average
+CREATE TRIGGER update_rating_on_insert AFTER INSERT ON Review
+    FOR EACH ROW EXECUTE FUNCTION update_location_rating_avg();
+ 
+CREATE TRIGGER update_rating_on_update AFTER UPDATE ON Review
+    FOR EACH ROW EXECUTE FUNCTION update_location_rating_avg();
+ 
+CREATE TRIGGER update_rating_on_delete AFTER DELETE ON Review
+    FOR EACH ROW EXECUTE FUNCTION update_location_rating_avg();
