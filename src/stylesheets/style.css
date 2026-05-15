@@ -6,5 +6,14 @@
 #navButton {
     padding: 30%;
     background-color: gray;
+}
 
+#infoBox {
+    border-color: black;
+    flex-direction: column;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 2%;
 }
