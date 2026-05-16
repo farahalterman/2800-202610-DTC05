@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hideout - Home</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+</head>
+<body>
+    <div id="mapsBox" class="container">
+        <div id="searchBox">
+            <input id="search-input" placeholder="Find a shady spot..." />
+            <button id="search-btn">Search</button>
+        </div>
+
+        <div id="aiResponse">
+            <p id="responseText"></p>
+        </div>
+
+        <div id="mapsDisplay">
+
+        </div>
+    </div>
+
+    <div id="infoBox" class="container">
+        <h2 id="nameBox">Hideout Name</h2>
+        <div id="ratingInfo">
+            <progress id="rating" value="0" max="10"></progress>
+        </div>
+        <form id="leaveRatingForm">
+            <input type="range" id="ratingInBar" name="ratingInBar" min="1" max="10">
+            <input type="button" id="submitRating" value="Rate!">
+        </form>
+
+    </div>
+    
+    <script type="module" src="main.js"></script>
+</body>
+</html>
