@@ -1,3 +1,32 @@
+/* Custom CSS Classes */
+.navItem {
+    /* margin-left: 5%;
+    margin-right: 5%; */
+    color: black;
+    text-decoration: none;
+    
+}
+
+.centeredContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.accountBtn {
+    white-space: nowrap;
+    text-align: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    width: 270%;
+    border-radius: 8px;
+    border-style: solid;
+    border-color: grey;
+    border-width: 1px;
+}
+
+/* Custom CSS IDs */
 #navbar {
 	display: inline-flex;
     flex-direction: row;
@@ -8,14 +37,6 @@
     border-width: 1px;
     border-radius: 5px;
     width: 30%;
-}
-
-.navItem {
-    /* margin-left: 5%;
-    margin-right: 5%; */
-    color: black;
-    text-decoration: none;
-    
 }
 
 #aiResponse {
@@ -84,4 +105,20 @@
     color: #dc2626;
     font-size: 0.85rem;
     text-align: center;
+}
+
+#buttonBox {
+    gap: 10px;
+    padding-top: 30px;
+}
+
+#logoutBtn {
+    color: red;
+}
+
+/* HTML Tags */
+
+a {
+    text-decoration: none;
+    display: block;
 }
