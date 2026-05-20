@@ -23,7 +23,7 @@ connectedCallback() {
                     </div>
                 </a>
 
-                <a href="index.html" class="navItem">
+                <a href="Account.html" class="navItem">
                     <div>
                         <h1>ACCOUNT</h1>
                     </div>
