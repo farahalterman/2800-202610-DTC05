@@ -103,9 +103,6 @@ app.post("/api/users", async (req, res) => {
       [first_name, last_name, email, password, home_location, admin || false],
     );
   } catch (error) {
-    if (error.code === "23505") {
-      return res.status(400).json({ error: "Email already exists" });
-    }
     res.status(500).json({ error: error.message });
   }
 });
@@ -342,6 +339,144 @@ app.get("/api/locations/:id", async (req, res) => {
       return res.status(404).json({ error: "Location not found" });
     }
     res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================================================
+// REVIEW TABLE
+// ============================================================================
+
+// CREATE review
+app.post("/api/reviews", async (req, res) => {
+  const {
+    user_id,
+    location_id,
+    overall_rating,
+    shade_rating,
+    accessibility_rating,
+    noise_rating,
+    review_text,
+  } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO Review (
+      user_id, location_id, overall_rating, 
+        shade_rating, accessibility_rating, noise_rating, review_text
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *
+      `,
+      [
+        user_id,
+        location_id,
+        overall_rating,
+        shade_rating,
+        accessibility_rating,
+        noise_rating,
+        review_text,
+      ],
+    );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// READ all reviews
+app.get("/api/reviews", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+        r.*,
+        u.first_name,
+        u.last_name,
+        l.location_name
+      FROM Review r
+      JOIN "User" u ON r.user_id = u.user_id
+      JOIN Location l ON r.location_id = l.location_id
+      ORDER BY r.created_at DESC`,
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// READ review by ID
+app.get("/api/reviews/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+        r.*,
+        u.first_name,
+        u.last_name,
+        u.email,
+        l.location_name,
+        l.coordinates[0] as longitude,
+        l.coordinates[1] as latitude
+      FROM Review r
+      JOIN "User" u ON r.user_id = u.user_id
+      JOIN Location l ON r.location_id = l.location_id
+      WHERE r.review_id = $1`,
+      [req.params.id],
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// UPDATE review
+app.put("/api/reviews/:id", async (req, res) => {
+  const {
+    overall_rating,
+    shade_rating,
+    accessibility_rating,
+    noise_rating,
+    review_text,
+  } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE Review
+       SET overall_rating = $1, 
+           shade_rating = $2, 
+           accessibility_rating = $3, 
+           noise_rating = $4, 
+           review_text = $5
+       WHERE review_id = $6
+       RETURNING *`,
+      [
+        overall_rating,
+        shade_rating,
+        accessibility_rating,
+        noise_rating,
+        review_text,
+        req.params.id,
+      ],
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Review not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE review
+app.delete("/api/reviews/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM Review WHERE review_id = $1 RETURNING *",
+      [req.params.id],
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Review not found" });
+    }
+    res.json({ message: "Review deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
