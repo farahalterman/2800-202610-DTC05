@@ -18,10 +18,15 @@ app.use(express.static("src"));
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
   host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME,
+  database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.DB_PORT || 5432,
 });
+
+const PORT = 3000;
+app.listen(PORT, () =>
+  console.log(`Server is running on http://localhost:${PORT}`),
+);
 
 // Test database connection
 pool.query("SELECT NOW()", (err, res) => {
@@ -110,7 +115,6 @@ app.post("/api/rate", async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
 
 
 
