@@ -20,12 +20,17 @@ class navBar extends HTMLElement {
     this.innerHTML = `
       <footer>
         <div class="container" id="navbar">
-          <a href="home.html" class="navItem">
-            <div><h1>HOME</h1></div>
-          </a>
-          <a href="index.html" class="navItem">
-            <div><h1>FAVORITES</h1></div>
-          </a>
+                <div class="navItem">
+                    <a href="index.html">
+                        <h1>HOME</h1>
+                    </a>
+                </div>
+
+                <div class="navItem">
+                    <a href="index.html">
+                        <h1>FAVOURITES</h1>
+                    </a>
+                </div>
           ${accountLink}
         </div>
       </footer>
