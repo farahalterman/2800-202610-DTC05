@@ -57,6 +57,7 @@ app.post("/api/search", async (req, res) => {
   }
 });
 
+//TODO: Can this route be deleted now? There is a post for "/api/reviews" now
 // Optional: POST endpoint to submit ratings
 app.post("/api/rate", async (req, res) => {
   try {
@@ -404,7 +405,7 @@ app.get("/api/reviews", async (req, res) => {
   }
 });
 
-// READ review by ID
+// READ review by review ID
 app.get("/api/reviews/:id", async (req, res) => {
   try {
     const result = await pool.query(
@@ -428,7 +429,7 @@ app.get("/api/reviews/:id", async (req, res) => {
   }
 });
 
-// UPDATE review
+// UPDATE review by review ID
 app.put("/api/reviews/:id", async (req, res) => {
   const {
     overall_rating,
@@ -466,7 +467,7 @@ app.put("/api/reviews/:id", async (req, res) => {
   }
 });
 
-// DELETE review
+// DELETE review by review ID
 app.delete("/api/reviews/:id", async (req, res) => {
   try {
     const result = await pool.query(
@@ -477,6 +478,68 @@ app.delete("/api/reviews/:id", async (req, res) => {
       return res.status(404).json({ error: "Review not found" });
     }
     res.json({ message: "Review deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ============================================================================
+// FAVORITE TABLE
+// ============================================================================
+
+// CREATE favorite
+app.post("/api/favorites", async (req, res) => {
+  const { customer_id, location_id } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO Favorite (customer_id, location_id)
+       VALUES ($1, $2)
+       RETURNING *`,
+      [customer_id, location_id],
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// READ all favorites
+app.get("/api/favorites", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+        f.*,
+        u.first_name,
+        u.last_name,
+        l.location_name,
+        l.coordinates[0] as longitude,
+        l.coordinates[1] as latitude,
+        l.overall_rating_avg
+      FROM Favorite f
+      JOIN "User" u ON f.customer_id = u.user_id
+      JOIN Location l ON f.location_id = l.location_id
+      ORDER BY f.created_at DESC`,
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// DELETE favorite by favorite ID
+app.delete("/api/favorites/:id", async (req, res) => {
+  try {
+    const result = await db.query(
+      "DELETE FROM Favorite WHERE favorite_id = $1 RETURNING *",
+      [req.params.id],
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Favorite not found" });
+    }
+    res.json({ message: "Favorite removed successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
