@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS Favorite CASCADE;
 DROP TABLE IF EXISTS Location CASCADE;
 DROP TABLE IF EXISTS "User" CASCADE;
 
-CREATE TABLE "User" (
+CREATE TABLE "User" ( -- remove "" if want to be user instead to match
     user_id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,

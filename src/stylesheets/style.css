@@ -17,3 +17,9 @@
     text-decoration: none;
     
 }
+
+#aiResponse {
+    padding: 2px;
+    border-style: solid;
+    border-color: black;
+}

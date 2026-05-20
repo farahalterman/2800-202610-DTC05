@@ -5,11 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hideout - Home</title>
     <link rel="stylesheet" href="stylesheets/style.css">
+    <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
 </head>
 <body>
     <div id="mapsBox" class="container">
         <div id="searchBox">
-            
+            <input id="search-input" placeholder="Find a shady spot..." />
+            <button id="search-btn">Search</button>
+        </div>
+
+        <div id="aiResponse">
+            <p id="responseText"></p>
         </div>
 
         <div id="mapsDisplay">
@@ -28,7 +37,7 @@
         </form>
 
     </div>
-
     
+    <script type="module" src="main.js"></script>
 </body>
 </html>
