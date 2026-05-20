@@ -1,10 +1,8 @@
-
 import "dotenv/config";
 import express from "express";
 import pg from "pg";
 import { searchLocations } from "./gemini.js";
-import cors from "cors" // Will need if we host front and back end on different ports
-
+import cors from "cors"; // Will need if we host front and back end on different ports
 
 // Middleware
 const { Pool } = pg;
@@ -37,37 +35,9 @@ pool.query("SELECT NOW()", (err, res) => {
   }
 });
 
-
 // ============================================================================
 // GEMINI AI FEATURE
 // ============================================================================
-
-// GET endpoint to fetch all locations
-app.get("/api/locations", async (req, res) => {
-  try {
-    // PostgreSQL POINT:
-    // coordinates[0] = x = longitude
-    // coordinates[1] = y = latitude
-
-    const result = await pool.query(`
-      SELECT
-        location_id,
-        location_name,
-        coordinates[0] AS longitude,
-        coordinates[1] AS latitude,
-        overall_rating_avg,
-        created_at,
-        updated_at
-      FROM Location
-      ORDER BY overall_rating_avg DESC
-    `);
-
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error fetching locations:", error);
-    res.status(500).json({ error: "Failed to fetch locations" });
-  }
-});
 
 // POST endpoint for Gemini AI search
 app.post("/api/search", async (req, res) => {
@@ -87,8 +57,6 @@ app.post("/api/search", async (req, res) => {
   }
 });
 
-
-
 // Optional: POST endpoint to submit ratings
 app.post("/api/rate", async (req, res) => {
   try {
@@ -104,8 +72,8 @@ app.post("/api/rate", async (req, res) => {
       `
       UPDATE Location
       SET
-        overall_rating_avg = $1,
-        updated_at = CURRENT_TIMESTAMP
+      overall_rating_avg = $1,
+      updated_at = CURRENT_TIMESTAMP
       WHERE location_id = $2
       `,
       [rating, locationId],
@@ -118,8 +86,6 @@ app.post("/api/rate", async (req, res) => {
   }
 });
 
-
-
 // ============================================================================
 // USER TABLE
 // ============================================================================
@@ -130,13 +96,12 @@ app.post("/api/users", async (req, res) => {
     req.body;
 
   try {
-    const result = await db.query(
+    const result = await pool.query(
       `INSERT INTO "User" (first_name, last_name, email, password, home_location, admin)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *`,
       [first_name, last_name, email, password, home_location, admin || false],
     );
-    res.status(201).json(result.rows[0]);
   } catch (error) {
     if (error.code === "23505") {
       return res.status(400).json({ error: "Email already exists" });
@@ -148,7 +113,7 @@ app.post("/api/users", async (req, res) => {
 // READ all users
 app.get("/api/users", async (req, res) => {
   try {
-    const result = await db.query(
+    const result = await pool.query(
       'SELECT * FROM "User" ORDER BY created_at DESC',
     );
     res.json(result.rows);
@@ -160,7 +125,7 @@ app.get("/api/users", async (req, res) => {
 // READ user by ID
 app.get("/api/users/:id", async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM "User" WHERE user_id = $1', [
+    const result = await pool.query('SELECT * FROM "User" WHERE user_id = $1', [
       req.params.id,
     ]);
     if (result.rows.length === 0) {
@@ -175,12 +140,12 @@ app.get("/api/users/:id", async (req, res) => {
 // READ user profile
 app.get("/api/users/:id/profile", async (req, res) => {
   try {
-    const result = await db.query(
+    const result = await pool.query(
       `SELECT 
-        u.*,
-        COUNT(DISTINCT r.review_id) as total_reviews,
-        COUNT(DISTINCT f.favorite_id) as total_favorites,
-        ROUND(AVG(r.overall_rating), 2) as avg_rating_given
+      u.*,
+      COUNT(DISTINCT r.review_id) as total_reviews,
+      COUNT(DISTINCT f.favorite_id) as total_favorites,
+      ROUND(AVG(r.overall_rating), 2) as avg_rating_given
       FROM "User" u
       LEFT JOIN Review r ON u.user_id = r.user_id
       LEFT JOIN Favorite f ON u.user_id = f.customer_id
@@ -200,12 +165,12 @@ app.get("/api/users/:id/profile", async (req, res) => {
 // READ user's reviews
 app.get("/api/users/:id/reviews", async (req, res) => {
   try {
-    const result = await db.query(
+    const result = await pool.query(
       `SELECT 
-        r.*,
-        l.location_name,
-        l.coordinates[0] as longitude,
-        l.coordinates[1] as latitude
+      r.*,
+      l.location_name,
+      l.coordinates[0] as longitude,
+      l.coordinates[1] as latitude
       FROM Review r
       JOIN Location l ON r.location_id = l.location_id
       WHERE r.user_id = $1
@@ -221,15 +186,15 @@ app.get("/api/users/:id/reviews", async (req, res) => {
 // READ user's favorites
 app.get("/api/users/:id/favorites", async (req, res) => {
   try {
-    const result = await db.query(
+    const result = await pool.query(
       `SELECT 
-        f.favorite_id,
-        f.created_at as favorited_at,
-        l.location_id,
-        l.location_name,
-        l.coordinates[0] as longitude,
-        l.coordinates[1] as latitude,
-        l.overall_rating_avg
+      f.favorite_id,
+      f.created_at as favorited_at,
+      l.location_id,
+      l.location_name,
+      l.coordinates[0] as longitude,
+      l.coordinates[1] as latitude,
+      l.overall_rating_avg
       FROM Favorite f
       JOIN Location l ON f.location_id = l.location_id
       WHERE f.customer_id = $1
@@ -256,12 +221,12 @@ app.put("/api/users/:id", async (req, res) => {
   } = req.body;
 
   try {
-    const result = await db.query(
+    const result = await pool.query(
       `UPDATE "User"
-       SET first_name = $1, last_name = $2, email = $3, password = $4,
-           home_location = $5, tutorial = $6, settings = $7
-       WHERE user_id = $8
-       RETURNING *`,
+      SET first_name = $1, last_name = $2, email = $3, password = $4,
+      home_location = $5, tutorial = $6, settings = $7
+      WHERE user_id = $8
+      RETURNING *`,
       [
         first_name,
         last_name,
@@ -285,7 +250,7 @@ app.put("/api/users/:id", async (req, res) => {
 // DELETE user
 app.delete("/api/users/:id", async (req, res) => {
   try {
-    const result = await db.query(
+    const result = await pool.query(
       'DELETE FROM "User" WHERE user_id = $1 RETURNING *',
       [req.params.id],
     );
@@ -293,6 +258,90 @@ app.delete("/api/users/:id", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     res.json({ message: "User deleted successfully", user: result.rows[0] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================================================
+// LOCATION TABLE
+// ============================================================================
+
+// CREATE location
+app.post("/api/locations", async (req, res) => {
+  const { location_name, latitude, longitude } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO Location (location_name, coordinates)
+      VALUES ($1, POINT($2, $3))
+      RETURNING location_id, location_name,
+        coordinates[0] as longitude,
+        coordinates[1] as latitude,
+        overall_rating_avg`,
+      [location_name, longitude, latitude],
+    );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Get all locations.
+ *
+ * claude.ai
+ * @author: Sonnet 4.5
+ */
+// This GET is from the Gemini API feature
+// GET endpoint to fetch all locations
+app.get("/api/locations", async (req, res) => {
+  try {
+    // PostgreSQL POINT:
+    // coordinates[0] = x = longitude
+    // coordinates[1] = y = latitude
+
+    const result = await pool.query(`
+        SELECT
+          location_id,
+          location_name,
+          coordinates[0] AS longitude,
+          coordinates[1] AS latitude,
+          overall_rating_avg,
+          created_at,
+          updated_at
+        FROM Location
+        ORDER BY overall_rating_avg DESC
+      `);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    res.status(500).json({ error: "Failed to fetch locations" });
+  }
+});
+
+// READ location by ID
+app.get("/api/locations/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+        l.location_id, 
+        l.location_name, 
+        l.coordinates[0] as longitude,
+        l.coordinates[1] as latitude,
+        l.overall_rating_avg,
+        l.created_at,
+        COUNT(r.review_id) as review_count
+      FROM Location l
+      LEFT JOIN Review r ON l.location_id = r.location_id
+      WHERE l.location_id = $1
+      GROUP BY l.location_id`,
+      [req.params.id],
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Location not found" });
+    }
+    res.json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
