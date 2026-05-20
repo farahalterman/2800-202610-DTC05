@@ -1,20 +1,17 @@
-const express = require("express");
-const app = express();
-const cors = require("cors"); // Will need if we host front and back end on different ports
-
-// Middleware
-app.use(express.static("src"));
-app.use(express.urlencoded());
-app.use(cors());
 
 import "dotenv/config";
 import express from "express";
 import pg from "pg";
 import { searchLocations } from "./gemini.js";
+import cors from "cors" // Will need if we host front and back end on different ports
 
+
+// Middleware
 const { Pool } = pg;
 const app = express();
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded());
 app.use(express.static("src"));
 
 // PostgreSQL connection pool
@@ -34,6 +31,8 @@ pool.query("SELECT NOW()", (err, res) => {
     console.log("Database connected successfully");
   }
 });
+
+
 
 // GET endpoint to fetch all locations
 app.get("/api/locations", async (req, res) => {
@@ -80,11 +79,7 @@ app.post("/api/search", async (req, res) => {
   }
 });
 
-// app.post('/api/search', async (req, res) => {
-//   const { query, locations } = req.body;
-//   const response = await searchLocations(query, spots);
-//   res.json({ response });
-// });
+
 
 // Optional: POST endpoint to submit ratings
 app.post("/api/rate", async (req, res) => {
@@ -116,3 +111,6 @@ app.post("/api/rate", async (req, res) => {
 });
 
 app.listen(3000, () => console.log("Server running on port 3000"));
+
+
+
