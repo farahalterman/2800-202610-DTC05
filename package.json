@@ -2,7 +2,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "none",
-  "main": "Server/server.js",
+  "main": "server/server.js",
   "scripts": {
     "dev": "nodemon --ignore 'data/*' --ignore '*.json' server.js",
     "build": "vite build"
