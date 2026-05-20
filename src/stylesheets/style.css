@@ -7,15 +7,46 @@
     border-style: solid;
     border-width: 1px;
     border-radius: 5px;
-    width: 30%;
+    width: 100%;
+    /* max-height: ; */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .navItem h1 {
+        font-size: 1.3rem;
+    }
+}
+
+a {
+    color: black;
+    text-decoration: none;
 }
 
 .navItem {
-    /* margin-left: 5%;
-    margin-right: 5%; */
-    color: black;
-    text-decoration: none;
-    
+    align-self: stretch;
+    border-radius: 5px;
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+}
+
+.navItem:hover {
+    background-color: #f0f0f0;
+}
+
+.navItem:active {
+    background-color: #d0d0d0;
 }
 
 #aiResponse {
