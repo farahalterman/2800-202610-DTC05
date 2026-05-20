@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import pg from "pg";
+<<<<<<< HEAD
 import bcrypt from "bcrypt";
 import { searchLocations } from "./gemini.js";
 import { authenticate, optionalAuth } from "./auth.js";
@@ -15,22 +16,36 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
+=======
+import { searchLocations } from "./gemini.js";
+
+const { Pool } = pg;
+const app = express();
+app.use(express.json());
+>>>>>>> 99908e7 (add acct page HTML/CSS)
 app.use(express.static("src"));
 
 // PostgreSQL connection pool
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
   host: process.env.DB_HOST || "localhost",
+<<<<<<< HEAD
   database: process.env.POSTGRES_DB,
+=======
+  database: process.env.DB_NAME,
+>>>>>>> 99908e7 (add acct page HTML/CSS)
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.DB_PORT || 5432,
 });
 
+<<<<<<< HEAD
 const PORT = 3000;
 app.listen(PORT, () =>
   console.log(`Server is running on http://localhost:${PORT}`),
 );
 
+=======
+>>>>>>> 99908e7 (add acct page HTML/CSS)
 // Test database connection
 pool.query("SELECT NOW()", (err, res) => {
   if (err) {
@@ -40,12 +55,41 @@ pool.query("SELECT NOW()", (err, res) => {
   }
 });
 
+<<<<<<< HEAD
 // ── Auth routes (register, login, me) ────────────────────────────────────────
 app.use(createAuthRouter(pool));
 
 // ============================================================================
 // GEMINI AI FEATURE
 // ============================================================================
+=======
+// GET endpoint to fetch all locations
+app.get("/api/locations", async (req, res) => {
+  try {
+    // PostgreSQL POINT:
+    // coordinates[0] = x = longitude
+    // coordinates[1] = y = latitude
+
+    const result = await pool.query(`
+      SELECT
+        location_id,
+        location_name,
+        coordinates[0] AS longitude,
+        coordinates[1] AS latitude,
+        overall_rating_avg,
+        created_at,
+        updated_at
+      FROM Location
+      ORDER BY overall_rating_avg DESC
+    `);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    res.status(500).json({ error: "Failed to fetch locations" });
+  }
+});
+>>>>>>> 99908e7 (add acct page HTML/CSS)
 
 // POST endpoint for Gemini AI search
 app.post("/api/search", async (req, res) => {
@@ -65,7 +109,16 @@ app.post("/api/search", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 //TODO: Can this route be deleted now? There is a post for "/api/reviews" now
+=======
+// app.post('/api/search', async (req, res) => {
+//   const { query, locations } = req.body;
+//   const response = await searchLocations(query, spots);
+//   res.json({ response });
+// });
+
+>>>>>>> 99908e7 (add acct page HTML/CSS)
 // Optional: POST endpoint to submit ratings
 app.post("/api/rate", async (req, res) => {
   try {
@@ -81,8 +134,13 @@ app.post("/api/rate", async (req, res) => {
       `
       UPDATE Location
       SET
+<<<<<<< HEAD
       overall_rating_avg = $1,
       updated_at = CURRENT_TIMESTAMP
+=======
+        overall_rating_avg = $1,
+        updated_at = CURRENT_TIMESTAMP
+>>>>>>> 99908e7 (add acct page HTML/CSS)
       WHERE location_id = $2
       `,
       [rating, locationId],
@@ -95,6 +153,7 @@ app.post("/api/rate", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // ============================================================================
 // USER TABLE
 // ============================================================================
@@ -583,3 +642,6 @@ app.delete("/api/favorites/:id", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+=======
+app.listen(3000, () => console.log("Server running on port 3000"));
+>>>>>>> 99908e7 (add acct page HTML/CSS)
