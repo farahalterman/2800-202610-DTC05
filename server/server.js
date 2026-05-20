@@ -1,8 +1,13 @@
 import "dotenv/config";
 import express from "express";
 import pg from "pg";
+import bcrypt from "bcrypt";
 import { searchLocations } from "./gemini.js";
+import { authenticate, optionalAuth } from "./auth.js";
+import createAuthRouter from "./authRoutes.js";
 import cors from "cors"; // Will need if we host front and back end on different ports
+
+const SALT_ROUNDS = 12;
 
 // Middleware
 const { Pool } = pg;
@@ -34,6 +39,9 @@ pool.query("SELECT NOW()", (err, res) => {
     console.log("Database connected successfully");
   }
 });
+
+// ── Auth routes (register, login, me) ────────────────────────────────────────
+app.use(createAuthRouter(pool));
 
 // ============================================================================
 // GEMINI AI FEATURE
@@ -91,28 +99,38 @@ app.post("/api/rate", async (req, res) => {
 // USER TABLE
 // ============================================================================
 
-// CREATE user
-app.post("/api/users", async (req, res) => {
+// CREATE user (admin use — passwords are automatically hashed)
+// Normal registration should go through POST /api/auth/register
+app.post("/api/users", authenticate, async (req, res) => {
   const { first_name, last_name, email, password, home_location, admin } =
     req.body;
 
+  if (!first_name || !last_name || !email || !password) {
+    return res
+      .status(400)
+      .json({ error: "first_name, last_name, email, and password are required" });
+  }
+
   try {
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
     const result = await pool.query(
       `INSERT INTO "User" (first_name, last_name, email, password, home_location, admin)
       VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *`,
-      [first_name, last_name, email, password, home_location, admin || false],
+      RETURNING user_id, first_name, last_name, email, admin, home_location, created_at`,
+      [first_name, last_name, email, hashedPassword, home_location, admin || false],
     );
+    res.status(201).json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// READ all users
+// READ all users (password field excluded)
 app.get("/api/users", async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM "User" ORDER BY created_at DESC',
+      'SELECT user_id, first_name, last_name, email, admin, home_location, tutorial, settings, created_at, updated_at FROM "User" ORDER BY created_at DESC',
     );
     res.json(result.rows);
   } catch (error) {
@@ -120,10 +138,10 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
-// READ user by ID
+// READ user by ID (password field excluded)
 app.get("/api/users/:id", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM "User" WHERE user_id = $1', [
+    const result = await pool.query('SELECT user_id, first_name, last_name, email, admin, home_location, tutorial, settings, created_at, updated_at FROM "User" WHERE user_id = $1', [
       req.params.id,
     ]);
     if (result.rows.length === 0) {
@@ -140,7 +158,8 @@ app.get("/api/users/:id/profile", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT 
-      u.*,
+      u.user_id, u.first_name, u.last_name, u.email, u.admin,
+      u.home_location, u.tutorial, u.settings, u.created_at, u.updated_at,
       COUNT(DISTINCT r.review_id) as total_reviews,
       COUNT(DISTINCT f.favorite_id) as total_favorites,
       ROUND(AVG(r.overall_rating), 2) as avg_rating_given
@@ -205,9 +224,13 @@ app.get("/api/users/:id/favorites", async (req, res) => {
   }
 });
 
-// UPDATE user
-// TODO: Decide which fields should be updateable by the user from the profile page
-app.put("/api/users/:id", async (req, res) => {
+// UPDATE user (requires auth; users can only update their own account)
+app.put("/api/users/:id", authenticate, async (req, res) => {
+  // Only allow the user themselves (or an admin) to update
+  if (req.user.userId !== parseInt(req.params.id) && !req.user.admin) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
   const {
     first_name,
     last_name,
@@ -219,20 +242,31 @@ app.put("/api/users/:id", async (req, res) => {
   } = req.body;
 
   try {
+    // If password is provided, hash it; otherwise keep the existing one
+    let hashedPassword;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    }
+
     const result = await pool.query(
       `UPDATE "User"
-      SET first_name = $1, last_name = $2, email = $3, password = $4,
-      home_location = $5, tutorial = $6, settings = $7
+      SET first_name = COALESCE($1, first_name),
+          last_name = COALESCE($2, last_name),
+          email = COALESCE($3, email),
+          password = COALESCE($4, password),
+          home_location = COALESCE($5, home_location),
+          tutorial = COALESCE($6, tutorial),
+          settings = COALESCE($7, settings)
       WHERE user_id = $8
-      RETURNING *`,
+      RETURNING user_id, first_name, last_name, email, admin, home_location, tutorial, settings, created_at, updated_at`,
       [
-        first_name,
-        last_name,
-        email,
-        password,
-        home_location,
-        tutorial,
-        settings,
+        first_name || null,
+        last_name || null,
+        email || null,
+        hashedPassword || null,
+        home_location || null,
+        tutorial ?? null,
+        settings || null,
         req.params.id,
       ],
     );
@@ -245,11 +279,16 @@ app.put("/api/users/:id", async (req, res) => {
   }
 });
 
-// DELETE user
-app.delete("/api/users/:id", async (req, res) => {
+// DELETE user (requires auth; users can only delete their own account)
+app.delete("/api/users/:id", authenticate, async (req, res) => {
+  // Only allow the user themselves (or an admin) to delete
+  if (req.user.userId !== parseInt(req.params.id) && !req.user.admin) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
   try {
     const result = await pool.query(
-      'DELETE FROM "User" WHERE user_id = $1 RETURNING *',
+      'DELETE FROM "User" WHERE user_id = $1 RETURNING user_id, first_name, last_name, email',
       [req.params.id],
     );
     if (result.rows.length === 0) {
