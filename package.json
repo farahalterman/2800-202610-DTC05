@@ -3,7 +3,7 @@
   "description": "none",
   "main": "Server/server.js",
   "scripts": {
-"dev": "concurrently \"vite\" \"nodemon server/server.js\"",
+    "dev": "concurrently \"vite\" \"nodemon server/server.js\"",
     "build": "vite build"
   },
   "devDependencies": {
@@ -15,6 +15,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.8",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "nodemon": "^3.1.14"
   }
