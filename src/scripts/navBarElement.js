@@ -21,7 +21,7 @@ class navBar extends HTMLElement {
       <footer>
         <div class="container" id="navbar">
                 <div class="navItem">
-                    <a href="index.html">
+                    <a href="home.html">
                         <h1>HOME</h1>
                     </a>
                 </div>
