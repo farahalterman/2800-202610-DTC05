@@ -161,3 +161,30 @@ a {
     text-decoration: none;
     display: block;
 }
+
+/* Map Tags */
+.map-container {
+    width: 100%;
+    height: 70vh;
+    z-index: 0;
+}
+
+.dataset-control {
+    min-width: 16rem;
+    background-color: var(--bs-body-bg);
+    border-radius: var(--bs-border-radius);
+}
+
+.dataset-control .dataset-control-body {
+    padding: 0.75rem 0.875rem;
+}
+
+.dataset-control .form-check:not(:last-child) {
+    margin-bottom: 0.5rem;
+}
+
+.fountain-icon {
+    font-size: 1rem;
+    line-height: 1.125rem;
+    text-align: center;
+}
