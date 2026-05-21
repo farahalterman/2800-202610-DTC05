@@ -46,6 +46,32 @@ app.use(createAuthRouter(pool));
 // ============================================================================
 // GEMINI AI FEATURE
 // ============================================================================
+// GET endpoint to fetch all locations
+app.get("/api/locations", async (req, res) => {
+  try {
+    // PostgreSQL POINT:
+    // coordinates[0] = x = longitude
+    // coordinates[1] = y = latitude
+
+    const result = await pool.query(`
+      SELECT
+        location_id,
+        location_name,
+        coordinates[0] AS longitude,
+        coordinates[1] AS latitude,
+        overall_rating_avg,
+        created_at,
+        updated_at
+      FROM Location
+      ORDER BY overall_rating_avg DESC
+    `);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    res.status(500).json({ error: "Failed to fetch locations" });
+  }
+});
 
 // POST endpoint for Gemini AI search
 app.post("/api/search", async (req, res) => {
@@ -66,6 +92,12 @@ app.post("/api/search", async (req, res) => {
 });
 
 //TODO: Can this route be deleted now? There is a post for "/api/reviews" now
+// app.post('/api/search', async (req, res) => {
+//   const { query, locations } = req.body;
+//   const response = await searchLocations(query, spots);
+//   res.json({ response });
+// });
+
 // Optional: POST endpoint to submit ratings
 app.post("/api/rate", async (req, res) => {
   try {

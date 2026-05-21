@@ -10,22 +10,31 @@ class navBar extends HTMLElement {
     const user = token ? JSON.parse(localStorage.getItem("user") || "null") : null;
 
     const accountLink = user
-      ? `<a href="account.html" class="navItem">
-           <div><h1>${user.first_name.toUpperCase()}</h1></div>
-         </a>`
-      : `<a href="login.html" class="navItem">
-           <div><h1>LOGIN</h1></div>
-         </a>`;
+      ? `<div class="navItem">
+            <a href="account.html">
+                <h1>${user.first_name.toUpperCase()}</h1>
+            </a>
+        </div>`
+      : `<div class="navItem">
+            <a href="login.html">
+                <h1>LOGIN</h1>
+            </a>
+        </div>`;
 
     this.innerHTML = `
       <footer>
         <div class="container" id="navbar">
-          <a href="home.html" class="navItem">
-            <div><h1>HOME</h1></div>
-          </a>
-          <a href="index.html" class="navItem">
-            <div><h1>FAVORITES</h1></div>
-          </a>
+                <div class="navItem">
+                    <a href="home.html">
+                        <h1>HOME</h1>
+                    </a>
+                </div>
+
+                <div class="navItem">
+                    <a href="index.html">
+                        <h1>FAVOURITES</h1>
+                    </a>
+                </div>
           ${accountLink}
         </div>
       </footer>
