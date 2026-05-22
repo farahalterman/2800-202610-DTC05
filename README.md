@@ -120,7 +120,8 @@ As of May 22nd 2026, this app is still in a developmental stage. There are still
 # Credits, References & Licenses
 
 ## Attributions
-  **Note**: Claude, Google Gemini, and Chat GPT were all used during the development of the AI smart search feature. Our instructions specifically stated that we 
+  **Note**: Claude, Google Gemini, and Chat GPT were all used during the development of the AI smart search feature. Our instructions specifically stated that we did not need to cite the AI assistance to the same level of scrutiny, since the goal was to make a feature entirely with AI. gemini.js was completely generated with AI, and a couple functions in server.js were also generated for this feature
+  
 - GET request for all locations in the Location table:  
   claude.ai (Sonnet 4.5)
 - Create a function and triggers to update overall_rating_avg of a location in the Location table
