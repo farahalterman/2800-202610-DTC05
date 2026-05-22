@@ -75,7 +75,7 @@ Dummy Password: guest123
 - Production: Render PostgreSQL (cloud-hosted)
 
 ### APIs and frameworks
-    **Note**: All dependencies (APIs and frameworks) will be installed using npm (see [Installing dependencies with npm](#installing-dependencies-with-npm))  
+  **Note**: All dependencies (APIs and frameworks) will be installed using npm (see [Installing dependencies with npm](#installing-dependencies-with-npm))  
 -   "@google/generative-ai": "^0.24.1" - requires key for Gemini integration
 -   "@popperjs/core": "^2.11.8"
 -   "bcrypt": "^6.0.0"
@@ -120,7 +120,7 @@ As of May 22nd 2026, this app is still in a developmental stage. There are still
 # Credits, References & Licenses
 
 ## Attributions
-    **Note**: Claude, Google Gemini, and Chat GPT were all used during the development of the AI smart search feature. Our instructions specifically stated that we 
+  **Note**: Claude, Google Gemini, and Chat GPT were all used during the development of the AI smart search feature. Our instructions specifically stated that we 
 - GET request for all locations in the Location table:  
   claude.ai (Sonnet 4.5)
 - Create a function and triggers to update overall_rating_avg of a location in the Location table
