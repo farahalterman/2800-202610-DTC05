@@ -40,7 +40,7 @@ pool.query("SELECT NOW()", (err, res) => {
   }
 });
 
-// ── Auth routes (register, login, me) ────────────────────────────────────────
+// Auth routes (register, login, me)
 app.use(createAuthRouter(pool));
 
 // ============================================================================
@@ -189,7 +189,7 @@ app.get("/api/users/:id", async (req, res) => {
 app.get("/api/users/:id/profile", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
       u.user_id, u.first_name, u.last_name, u.email, u.admin,
       u.home_location, u.tutorial, u.settings, u.created_at, u.updated_at,
       COUNT(DISTINCT r.review_id) as total_reviews,
@@ -215,7 +215,7 @@ app.get("/api/users/:id/profile", async (req, res) => {
 app.get("/api/users/:id/reviews", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
       r.*,
       l.location_name,
       l.coordinates[0] as longitude,
@@ -236,7 +236,7 @@ app.get("/api/users/:id/reviews", async (req, res) => {
 app.get("/api/users/:id/favorites", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
       f.favorite_id,
       f.created_at as favorited_at,
       l.location_id,
@@ -393,9 +393,9 @@ app.get("/api/locations", async (req, res) => {
 app.get("/api/locations/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT 
-        l.location_id, 
-        l.location_name, 
+      `SELECT
+        l.location_id,
+        l.location_name,
         l.coordinates[0] as longitude,
         l.coordinates[1] as latitude,
         l.overall_rating_avg,
@@ -435,7 +435,7 @@ app.post("/api/reviews", async (req, res) => {
   try {
     const result = await pool.query(
       `INSERT INTO Review (
-      user_id, location_id, overall_rating, 
+      user_id, location_id, overall_rating,
         shade_rating, accessibility_rating, noise_rating, review_text
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -460,7 +460,7 @@ app.post("/api/reviews", async (req, res) => {
 app.get("/api/reviews", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
         r.*,
         u.first_name,
         u.last_name,
@@ -480,7 +480,7 @@ app.get("/api/reviews", async (req, res) => {
 app.get("/api/reviews/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
         r.*,
         u.first_name,
         u.last_name,
@@ -513,10 +513,10 @@ app.put("/api/reviews/:id", async (req, res) => {
   try {
     const result = await pool.query(
       `UPDATE Review
-       SET overall_rating = $1, 
-           shade_rating = $2, 
-           accessibility_rating = $3, 
-           noise_rating = $4, 
+       SET overall_rating = $1,
+           shade_rating = $2,
+           accessibility_rating = $3,
+           noise_rating = $4,
            review_text = $5
        WHERE review_id = $6
        RETURNING *`,
@@ -580,7 +580,7 @@ app.post("/api/favorites", async (req, res) => {
 app.get("/api/favorites", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT 
+      `SELECT
         f.*,
         u.first_name,
         u.last_name,

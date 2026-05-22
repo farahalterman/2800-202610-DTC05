@@ -1,4 +1,4 @@
-/* ── CSS Variables (Theme) ──────────────────────────────────────────────── */
+/* CSS Variables (Theme) */
 :root {
   --green-dark: #2d6a4f;
   --green-mid: #40916c;
@@ -18,7 +18,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ── Reset ───────────────────────────────────────────────────────────────── */
+/* Reset */
 *, *::before, *::after { box-sizing: border-box; }
 body {
   margin: 0;
@@ -32,7 +32,7 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
-/* ── App Header ──────────────────────────────────────────────────────────── */
+/* App Header */
 .app-header {
   background: var(--card-bg);
   border-bottom: 1px solid #e5e7eb;
@@ -49,7 +49,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--green-dark);
 }
 
-/* ── Bottom Nav ──────────────────────────────────────────────────────────── */
+/* Bottom Nav */
 footer {
   position: fixed;
   bottom: 0;
@@ -85,7 +85,7 @@ footer {
 .navItem:hover { background: #f3f4f6; }
 .navItem:active { background: #e5e7eb; }
 
-/* ── Hero Landing ────────────────────────────────────────────────────────── */
+/* Hero Landing */
 .hero {
   background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 50%, var(--green-light) 100%);
   color: #fff;
@@ -108,17 +108,17 @@ footer {
   border-color: #f5c542;
 }
 
-/* ── Features ────────────────────────────────────────────────────────────── */
+/* Features */
 .features { background: var(--card-bg); }
 .feature-icon { font-size: 2.2rem; margin-bottom: 8px; }
 .feature-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
 .feature-desc { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
 
-/* ── CTA ─────────────────────────────────────────────────────────────────── */
+/* CTA */
 .cta { background: var(--sun-light); }
 .cta h2 { font-size: 1.4rem; font-weight: 700; }
 
-/* ── Search Bar ──────────────────────────────────────────────────────────── */
+/* Search Bar */
 .search-bar {
   background: var(--card-bg);
   padding: 12px 0;
@@ -136,7 +136,7 @@ footer {
 }
 .search-bar .btn-primary:hover { background: var(--green-dark); }
 
-/* ── AI Response Box ─────────────────────────────────────────────────────── */
+/* AI Response Box */
 #aiResponse {
   background: var(--green-pale);
   border-left: 4px solid var(--green-mid);
@@ -147,7 +147,7 @@ footer {
 #dismissAi { opacity: 0.5; }
 #dismissAi:hover { opacity: 1; }
 
-/* ── Location Cards ──────────────────────────────────────────────────────── */
+/* Location Cards */
 .location-card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -181,14 +181,14 @@ footer {
   transition: width 0.4s ease;
 }
 
-/* ── Location Detail Modal ───────────────────────────────────────────────── */
+/* Location Detail Modal */
 .shade-meter {
   background: #f9fafb;
   padding: 14px;
   border-radius: 10px;
 }
 
-/* ── Star Rating ─────────────────────────────────────────────────────────── */
+/* Star Rating */
 .star-rating { gap: 2px; }
 .star-btn {
   background: none;
@@ -207,10 +207,10 @@ footer {
   -webkit-appearance: auto;
 }
 
-/* ── Review Item ─────────────────────────────────────────────────────────── */
+/* Review Item */
 .review-item:last-child { border-bottom: none !important; padding-bottom: 0 !important; }
 
-/* ── Auth Forms (login.html) ─────────────────────────────────────────────── */
+/* Auth Forms (login.html) */
 .auth-container { max-width: 400px; margin: 60px auto; padding: 0 16px; }
 .auth-form {
   display: flex; flex-direction: column; gap: 12px;
@@ -247,7 +247,7 @@ footer {
 .auth-switch a { color: var(--green-dark); font-weight: 600; }
 .error-msg { color: #dc2626; font-size: 0.85rem; text-align: center; }
 
-/* ── Account Page ────────────────────────────────────────────────────────── */
+/* Account Page */
 .avatar {
   width: 64px; height: 64px;
   border-radius: 50%;
@@ -262,7 +262,7 @@ footer {
 #logoutBtn { color: #dc2626; border-color: #dc2626; }
 #logoutBtn:hover { background: #dc2626; color: #fff; }
 
-/* ── Bootstrap Overrides ─────────────────────────────────────────────────── */
+/* Bootstrap Overrides */
 .btn-primary {
   background-color: var(--green-mid);
   border-color: var(--green-mid);
@@ -286,10 +286,10 @@ footer {
 }
 .dropdown-item.active, .dropdown-item:active { background-color: var(--green-mid); }
 
-/* ── Utility ─────────────────────────────────────────────────────────────── */
+/* Utility */
 #buttonBox { gap: 10px; padding-top: 30px; }
 
-/* ── Map ─────────────────────────────────────────────────────────────────── */
+/* Map */
 #mapContainer { padding: 0; }
 #map {
   width: 100%;
@@ -315,7 +315,7 @@ footer {
 .dataset-control .form-check { margin-bottom: 4px; font-size: 13px; }
 .dataset-control .form-check:last-child { margin-bottom: 0; }
 
-/* ── Responsive ──────────────────────────────────────────────────────────── */
+/* Responsive */
 @media (min-width: 768px) {
   .hero { padding: 80px 16px 64px; }
   .hero-title { font-size: 3rem; }

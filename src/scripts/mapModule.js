@@ -202,7 +202,7 @@ export class MapModule {
         this.hideDataset(datasetId);
     }
 
-    // ── Shade location markers ──────────────────────────────────────────
+    // Shade location markers
     setShadeLocations(locs) {
         if (this._shadeLayer) this.map.removeLayer(this._shadeLayer);
         this._shadeLayer = L.layerGroup().addTo(this.map);

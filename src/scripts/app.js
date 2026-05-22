@@ -1,4 +1,4 @@
-// ── Globals ──────────────────────────────────────────────────────────────────
+// Globals
 let allLocations = [];
 let currentSort = "rating";
 let currentLocationId = null;
@@ -10,7 +10,7 @@ const authHeaders = () => {
   return t ? { Authorization: `Bearer ${t}`, "Content-Type": "application/json" } : { "Content-Type": "application/json" };
 };
 
-// ── Init ─────────────────────────────────────────────────────────────────────
+// Init
 document.addEventListener("DOMContentLoaded", () => {
   setupViewToggle();
   loadLocations();
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateGreeting();
 });
 
-// ── Load Locations ───────────────────────────────────────────────────────────
+// Load Locations
 async function loadLocations() {
   try {
     const res = await fetch("/api/locations");
@@ -34,14 +34,14 @@ async function loadLocations() {
   }
 }
 
-// ── Push location markers to the Leaflet map ────────────────────────────────
+// Push location markers to the Leaflet map
 function updateMapMarkers(locs) {
   if (window._mapInstance && typeof window._mapInstance.setShadeLocations === "function") {
     window._mapInstance.setShadeLocations(locs);
   }
 }
 
-// ── Map / List view toggle ──────────────────────────────────────────────────
+// Map / List view toggle
 function setupViewToggle() {
   const btnMap = document.getElementById("btnMapView");
   const btnList = document.getElementById("btnListView");
@@ -74,7 +74,7 @@ function setupViewToggle() {
   });
 }
 
-// ── Render Location Cards ────────────────────────────────────────────────────
+// Render Location Cards
 function renderLocations(locs) {
   const container = document.getElementById("locationList");
   if (!locs.length) {
@@ -108,7 +108,7 @@ function renderLocations(locs) {
   }).join("");
 }
 
-// ── Detail Modal ─────────────────────────────────────────────────────────────
+// Detail Modal
 async function openDetail(locationId) {
   currentLocationId = locationId;
   const loc = allLocations.find(l => l.location_id === locationId);
@@ -158,7 +158,7 @@ async function loadReviews(locationId) {
   }
 }
 
-// ── Favorite Button ──────────────────────────────────────────────────────────
+// Favorite Button
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("modalFavBtn").addEventListener("click", async function () {
     const t = token();
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ── Review Form ──────────────────────────────────────────────────────────────
+// Review Form
 function setupReviewForm() {
   document.getElementById("reviewLocationId").value = "";
 
@@ -242,7 +242,7 @@ function setupReviewForm() {
   });
 }
 
-// ── Search ───────────────────────────────────────────────────────────────────
+// Search
 function setupSearch() {
   document.getElementById("search-btn").addEventListener("click", handleSearch);
   document.getElementById("search-input").addEventListener("keypress", (e) => {
@@ -279,7 +279,7 @@ document.getElementById("dismissAi")?.addEventListener("click", () => {
   document.getElementById("aiResponse").classList.add("d-none");
 });
 
-// ── Sort ─────────────────────────────────────────────────────────────────────
+// Sort
 function setupSort() {
   document.querySelectorAll("[data-sort]").forEach(el => {
     el.addEventListener("click", (e) => {
@@ -303,7 +303,7 @@ function setupSort() {
   });
 }
 
-// ── Star Rating (for review form) ────────────────────────────────────────────
+// Star Rating (for review form)
 function setupStars() {
   document.querySelectorAll("#starOverall .star-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -326,14 +326,14 @@ function resetStars() {
   });
 }
 
-// ── Escape HTML ──────────────────────────────────────────────────────────────
+// Escape HTML
 function esc(str) {
   const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
 }
 
-// ── Greeting ─────────────────────────────────────────────────────────────────
+// Greeting
 function updateGreeting() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const el = document.getElementById("header-greeting");
