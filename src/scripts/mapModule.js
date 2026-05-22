@@ -201,6 +201,64 @@ export class MapModule {
         }
         this.hideDataset(datasetId);
     }
+
+    // Shade location markers
+    setShadeLocations(locs) {
+        if (this._shadeLayer) this.map.removeLayer(this._shadeLayer);
+        this._shadeLayer = L.layerGroup().addTo(this.map);
+
+        if (!locs || !locs.length) return;
+
+        locs.forEach((loc) => {
+            const lat = parseFloat(loc.latitude);
+            const lng = parseFloat(loc.longitude);
+            if (isNaN(lat) || isNaN(lng)) return;
+
+            const rating = parseFloat(loc.overall_rating_avg) || 0;
+            const color =
+                rating >= 8 ? "#2d6a4f" : rating >= 5 ? "#e9c46a" : "#e76f51";
+            const pct = Math.round((rating / 10) * 100);
+            const label =
+                rating >= 8 ? "Great shade" : rating >= 5 ? "Moderate" : "Limited";
+
+            const size = 20;
+            const border = 3;
+            const full = size + border * 2;
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${full}" height="${full}" viewBox="0 0 ${full} ${full}"><circle cx="${full / 2}" cy="${full / 2}" r="${size / 2}" fill="${color}" stroke="#fff" stroke-width="${border}" /></svg>`;
+
+            const icon = L.icon({
+                iconUrl:
+                    "data:image/svg+xml," + encodeURIComponent(svg),
+                iconSize: [full, full],
+                iconAnchor: [full / 2, full / 2],
+                popupAnchor: [0, -(full / 2)],
+            });
+
+            const marker = L.marker([lat, lng], { icon });
+
+            const safeName = (() => {
+                const d = document.createElement("div");
+                d.textContent = loc.location_name;
+                return d.innerHTML;
+            })();
+
+            marker.bindPopup(
+                `<div style="min-width:180px;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
+              <strong style="font-size:14px">${safeName}</strong>
+              <div style="margin-top:6px">
+                <span style="display:inline-block;background:${color};color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600">${rating.toFixed(1)}/10</span>
+                <span style="font-size:12px;color:#6b7280;margin-left:6px">${label}</span>
+              </div>
+              <div style="height:4px;background:#e5e7eb;border-radius:2px;margin-top:6px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${color};border-radius:2px"></div>
+              </div>
+            </div>`,
+                { closeButton: false, className: "leaflet-popup-shade" },
+            );
+
+            this._shadeLayer.addLayer(marker);
+        });
+    }
 }
 
 export function initMap(options = {}) {
