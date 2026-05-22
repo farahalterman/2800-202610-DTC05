@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login / Register</title>
+    <link rel="stylesheet" href="stylesheets/style.css" />
+  </head>
+  <body>
+    <div class="container py-2">
+      <a href="index.html" class="text-muted small">&larr; Back to Hideout</a>
+    </div>
+    <div class="auth-container" style="margin-top:20px;">
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form">
+        <h2>Login</h2>
+        <label>
+          Email
+          <input name="email" type="email" required autocomplete="email" />
+        </label>
+        <label>
+          Password
+          <input name="password" type="password" required autocomplete="current-password" />
+        </label>
+        <button type="submit">Login</button>
+        <p class="auth-switch">
+          Don't have an account?
+          <a href="#" id="show-register">Register here</a>
+        </p>
+        <p id="login-error" class="error-msg" style="display:none;"></p>
+      </form>
+
+      <!-- Register Form (hidden by default) -->
+      <form id="register-form" class="auth-form" style="display:none;">
+        <h2>Register</h2>
+        <label>
+          First Name
+          <input name="first_name" type="text" required autocomplete="given-name" />
+        </label>
+        <label>
+          Last Name
+          <input name="last_name" type="text" required autocomplete="family-name" />
+        </label>
+        <label>
+          Email
+          <input name="email" type="email" required autocomplete="email" />
+        </label>
+        <label>
+          Password
+          <input name="password" type="password" required minlength="8" autocomplete="new-password" />
+        </label>
+        <label>
+          Home Location (optional)
+          <input name="home_location" type="text" autocomplete="address-level2" />
+        </label>
+        <button type="submit">Register</button>
+        <p class="auth-switch">
+          Already have an account?
+          <a href="#" id="show-login">Login here</a>
+        </p>
+        <p id="register-error" class="error-msg" style="display:none;"></p>
+      </form>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("login-form");
+      const registerForm = document.getElementById("register-form");
+      const loginError = document.getElementById("login-error");
+      const registerError = document.getElementById("register-error");
+
+      // Toggle between forms
+      document.getElementById("show-register").addEventListener("click", (e) => {
+        e.preventDefault();
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        loginError.style.display = "none";
+      });
+
+      document.getElementById("show-login").addEventListener("click", (e) => {
+        e.preventDefault();
+        registerForm.style.display = "none";
+        loginForm.style.display = "block";
+        registerError.style.display = "none";
+      });
+
+      // Login handler
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        loginError.style.display = "none";
+
+        const email = loginForm.email.value.trim();
+        const password = loginForm.password.value;
+
+        try {
+          const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            loginError.textContent = data.error;
+            loginError.style.display = "block";
+            return;
+          }
+
+          // Store token and redirect
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          window.location.href = "home.html";
+        } catch (err) {
+          loginError.textContent = "Network error. Please try again.";
+          loginError.style.display = "block";
+        }
+      });
+
+      // Register handler
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        registerError.style.display = "none";
+
+        const payload = {
+          first_name: registerForm.first_name.value.trim(),
+          last_name: registerForm.last_name.value.trim(),
+          email: registerForm.email.value.trim(),
+          password: registerForm.password.value,
+          home_location: registerForm.home_location.value.trim() || undefined,
+        };
+
+        try {
+          const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            registerError.textContent = data.error;
+            registerError.style.display = "block";
+            return;
+          }
+
+          // Store token and redirect
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          window.location.href = "home.html";
+        } catch (err) {
+          registerError.textContent = "Network error. Please try again.";
+          registerError.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>

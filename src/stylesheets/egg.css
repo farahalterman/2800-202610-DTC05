@@ -1,0 +1,27 @@
+@keyframes spin {
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
+#spinLogo {
+    animation-name: spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+#logoText {
+    font-size: 100pt;
+}
+
+body {
+    background-color: black;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
