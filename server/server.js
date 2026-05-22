@@ -18,13 +18,20 @@ app.use(express.urlencoded());
 app.use(express.static("src"));
 
 // PostgreSQL connection pool
-const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.DB_PORT || 5432,
-});
+const pool = new Pool(
+  process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+      }
+    : {
+        user: process.env.POSTGRES_USER,
+        host: process.env.DB_HOST,
+        database: process.env.POSTGRES_DB,
+        password: process.env.POSTGRES_PASSWORD,
+        port: process.env.DB_PORT,
+      },
+);
 
 const PORT = 3000;
 app.listen(PORT, () =>
@@ -140,7 +147,9 @@ app.post("/api/users", authenticate, async (req, res) => {
   if (!first_name || !last_name || !email || !password) {
     return res
       .status(400)
-      .json({ error: "first_name, last_name, email, and password are required" });
+      .json({
+        error: "first_name, last_name, email, and password are required",
+      });
   }
 
   try {
@@ -150,7 +159,14 @@ app.post("/api/users", authenticate, async (req, res) => {
       `INSERT INTO "User" (first_name, last_name, email, password, home_location, admin)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING user_id, first_name, last_name, email, admin, home_location, created_at`,
-      [first_name, last_name, email, hashedPassword, home_location, admin || false],
+      [
+        first_name,
+        last_name,
+        email,
+        hashedPassword,
+        home_location,
+        admin || false,
+      ],
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -173,9 +189,10 @@ app.get("/api/users", async (req, res) => {
 // READ user by ID (password field excluded)
 app.get("/api/users/:id", async (req, res) => {
   try {
-    const result = await pool.query('SELECT user_id, first_name, last_name, email, admin, home_location, tutorial, settings, created_at, updated_at FROM "User" WHERE user_id = $1', [
-      req.params.id,
-    ]);
+    const result = await pool.query(
+      'SELECT user_id, first_name, last_name, email, admin, home_location, tutorial, settings, created_at, updated_at FROM "User" WHERE user_id = $1',
+      [req.params.id],
+    );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -554,7 +571,6 @@ app.delete("/api/reviews/:id", async (req, res) => {
   }
 });
 
-
 // ============================================================================
 // FAVORITE TABLE
 // ============================================================================
@@ -598,7 +614,6 @@ app.get("/api/favorites", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 // DELETE favorite by favorite ID
 app.delete("/api/favorites/:id", async (req, res) => {
