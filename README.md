@@ -18,6 +18,7 @@ Dummy Password: guest123
 - AI: Google Gemini is integrated into the smart search 
 
 # Project Structure
+```
 .  
 │   .gitignore  
 │   docker-compose.yml  
@@ -54,6 +55,7 @@ Dummy Password: guest123
     │  
     └───stylesheets  
             style.css  
+```
 
 # Installation & Running the Project 
 
