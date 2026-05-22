@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hideout — Account</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="stylesheets/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a href="index.html" class="app-logo">&#x1F333; Hideout</a>
+    </div>
+  </header>
+
+  <div class="container py-4">
+    <!-- Profile Card -->
+    <div class="card mb-4" id="profileCard">
+      <div class="card-body text-center">
+        <div class="avatar mb-3" id="profileAvatar">?</div>
+        <h2 id="profileName" class="h4">—</h2>
+        <p id="profileEmail" class="text-muted small">—</p>
+        <p id="profileLocation" class="text-muted small">—</p>
+
+        <div class="row g-2 text-center mt-3">
+          <div class="col-4">
+            <div class="fw-bold h5 mb-0" id="statReviews">0</div>
+            <small class="text-muted">Reviews</small>
+          </div>
+          <div class="col-4">
+            <div class="fw-bold h5 mb-0" id="statFavorites">0</div>
+            <small class="text-muted">Favorites</small>
+          </div>
+          <div class="col-4">
+            <div class="fw-bold h5 mb-0" id="statRating">—</div>
+            <small class="text-muted">Avg Rating</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile -->
+    <div class="card mb-4">
+      <div class="card-header bg-transparent">
+        <h3 class="h6 mb-0">Edit Profile</h3>
+      </div>
+      <div class="card-body">
+        <form id="profileForm">
+          <div class="mb-3">
+            <label class="form-label small">First Name</label>
+            <input class="form-control" id="editFirstName" type="text" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Last Name</label>
+            <input class="form-control" id="editLastName" type="text" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Email</label>
+            <input class="form-control" id="editEmail" type="email" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Home Location</label>
+            <input class="form-control" id="editHomeLocation" type="text" placeholder="e.g. Kitsilano" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">New Password <span class="text-muted">(leave blank to keep)</span></label>
+            <input class="form-control" id="editPassword" type="password" minlength="8" />
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+          <p id="profileMsg" class="small text-center mt-2" style="display:none;"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <button id="logoutBtn" class="btn btn-outline-danger w-100">Log Out</button>
+  </div>
+
+  <nav-bar></nav-bar>
+  <script src="scripts/navBarElement.js"></script>
+  <script src="scripts/account.js"></script>
+</body>
+</html>

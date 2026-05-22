@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hideout — Favorites</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="stylesheets/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a href="index.html" class="app-logo">&#x1F333; Hideout</a>
+    </div>
+  </header>
+
+  <div class="container py-3">
+    <h2 class="h4 mb-3">Your Favorites</h2>
+    <div id="favoritesList">
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+    <div id="emptyFavorites" class="text-center py-5 d-none">
+      <p class="text-muted mb-2">No favorites yet</p>
+      <a href="home.html" class="btn btn-primary btn-sm">Find Spots</a>
+    </div>
+  </div>
+
+  <nav-bar></nav-bar>
+  <script src="scripts/navBarElement.js"></script>
+  <script src="scripts/favorites.js"></script>
+</body>
+</html>
