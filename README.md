@@ -150,9 +150,3 @@ Team Members:
 - Fara Halterman (Set 2F)
 - Declan Shorman (Set 2F)
 - Brendan Jang (Set 2F)
-
-
-6. How to use the product (Features) 
-7. Include Credits, References, and Licenses 
-8. How did you use AI or any API’s? Tell us exactly what services and products you used and how you used them. Be very specific.
-9. Contact Information
