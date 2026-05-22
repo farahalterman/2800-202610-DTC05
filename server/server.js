@@ -374,9 +374,9 @@ app.post("/api/locations", async (req, res) => {
 
 /**
  * Get all locations.
- *
- * claude.ai
- * @author: Sonnet 4.5
+ * Generated using Sonnet 4.5
+ * 
+ * @author: claude.ai
  */
 // This GET is from the Gemini API feature
 // GET endpoint to fetch all locations
